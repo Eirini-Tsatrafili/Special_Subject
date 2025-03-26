@@ -1,0 +1,127 @@
+
+# for the realsense camera
+
+sudo apt update
+sudo apt upgrade
+sudo apt install git cmake build-essential libusb-1.0-0-dev pkg-config libssl-dev
+
+git clone https://github.com/IntelRealSense/librealsense.git
+cd librealsense
+
+git checkout development
+
+sudo apt install v4l-utils
+
+sudo ./scripts/setup_udev_rules.sh
+
+sudo apt update
+sudo apt install libx11-dev libx11-xcb-dev libxcb-dri3-dev libxcb-present-dev libxcb-render0-dev libxcb-shm0-dev libxcb-xfixes0-dev
+sudo apt install libxrandr-dev
+sudo apt install libxinerama-dev
+sudo apt install libxcursor-dev
+sudo apt install libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
+
+
+
+mkdir build
+cd build
+cmake .. -DBUILD_EXAMPLES=true -DFORCE_LIBUVC=true
+
+make -j$(nproc)
+sudo make install
+sudo ldconfig
+
+
+
+# to run jupyter notebook on device 
+
+python3 -m ensurepip --upgrade
+sudo apt install python3-venv
+
+
+python3 -m venv myenv
+
+source myenv/bin/activate
+pip install --upgrade pip
+
+pip install notebook
+jupyter-notebook --no-browser --ip=0.0.0.0 --port=8888
+
+http://10.64.83.237:8888/tree?token=3a323ab71ee76bbb3ec9c58469e3d282225f59ccf290be82
+
+
+
+# ----------------------- to the activated environment -------------------------------- #
+
+# to run the realsense camera program on the device in jupyter notebook
+
+sudo apt update
+sudo apt install python3-pip python3-dev python3-setuptools
+
+
+# gi
+
+sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-3.0
+sudo apt-get install python3-gi
+
+
+# synchronize the time
+date 
+sudo apt-get install ntp
+sudo service ntp start
+
+
+sudo apt-get install libgirepository1.0-dev
+pip install PyGObject
+
+sudo apt-get install libgstreamer1.0-dev python3-gst-1.0
+
+
+# opencv
+ 
+sudo pip instal opencv-python python3-opencv
+sudo pip install opencv-contrib-python  # Full version, including extra modules
+
+
+# numpy
+
+sudo pip install numpy 
+
+
+# bind realsense to jupyter notebook python
+
+cd /librealsense/build
+
+cmake .. -DBUILD_PYTHON_BINDINGS=ON -DPYTHON_EXECUTABLE=$(which python3)
+
+make -j$(nproc)
+
+sudo make install
+
+
+# To install the GStreamer RTSP Server manually from source, here are the steps you'll need to follow:
+
+sudo apt-get update
+sudo apt-get install libgstreamer1.0-dev libgstrtspserver-1.0-dev build-essential git
+sudo apt-get install gstreamer-plugins-bad1.0-dev
+sudo apt-get install gstreamer1.0-plugins-ugly
+sudo apt install gstreamer1.0-tools
+
+
+git clone https://gitlab.freedesktop.org/gstreamer/gst-rtsp-server.git
+
+cd gst-rtsp-server
+
+sudo apt install meson
+sudo apt install ninja-build
+
+meson setup build
+ninja -C build
+
+sudo ninja -C build install
+
+
+
+# for the application
+
+pip install opencv-python torch torchvision
